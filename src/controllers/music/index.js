@@ -1,20 +1,24 @@
-const express = require('express');
-const router = express.Router();
-const axios = require('axios');
 const musicService = require('@/services/music')
+const response = require('@/utils/response')
+const axios = require('axios');
 
 
-router.get('/searchMusic', async (req, res) => {
+async function searchMusic(req, res) {
     const { name, offset, limit } = req.query
     const { data } = await axios.post(`https://music.163.com/api/search/get/web?s=${name}&type=1&offset=${offset}&limit=${limit}`)
-    res.send(data)
-})
+    res.send(response.success(data))
+}
 
-router.get('/saveMusic', async (req, res) => {
+async function saveMusic(req, res) {
     const { id } = req.query
     if (!id) {
         res.send('没有获取到ID')
     }
+    if (await musicService.getMusic(id)) {
+        res.send('已有该音乐')
+        return
+    }
+
 
     // 获取歌曲文件流
     const musicFile = await axios({
@@ -30,10 +34,7 @@ router.get('/saveMusic', async (req, res) => {
     }
 
 
-    if (await Music.findOne({ id })) {
-        res.send('已有该音乐')
-        return
-    }
+
 
     // 获取歌曲信息
     const musicDetail = await axios.post(`https://music.163.com/api/v3/song/detail?id=${id}&c=[{id: ${id}}]`)
@@ -57,14 +58,20 @@ router.get('/saveMusic', async (req, res) => {
         lyric: musicLyric.data.lrc.lyric
     }
 
-    // 入库
-    await new Music(music).save()
 
     // 保存至本地
     const writer = fs.createWriteStream(`musicFile/${music.name}.mp3`);
     musicFile.data.pipe(writer);
 
-    writer.on('finish', () => {
-        res.send(true);
+    writer.on('finish', async () => {
+        // 入库
+        await musicService.createMusic()
+
+        res.send(response.success(true))
     });
-})
+}
+
+module.exports = {
+    searchMusic,
+    saveMusic
+};
