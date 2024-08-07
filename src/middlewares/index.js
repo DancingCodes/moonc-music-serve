@@ -1,3 +1,3 @@
 module.exports = (app) => {
-    require('@/middlewares/static')(app)
+    require('@/middlewares/static').init(app)
 }

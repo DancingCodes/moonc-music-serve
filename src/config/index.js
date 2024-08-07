@@ -1,5 +1,5 @@
 module.exports = (app) => {
     require('@/config/database');
 
-    require('@/config/serve')(app)
+    require('@/config/serve').init(app)
 }

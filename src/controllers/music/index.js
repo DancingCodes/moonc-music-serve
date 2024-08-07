@@ -1,7 +1,10 @@
 const musicService = require('@/services/music')
 const response = require('@/utils/response')
 const axios = require('axios');
-
+const { port } = require('@/config/serve')
+const fs = require('fs')
+const { uploadmusicPath } = require('@/middlewares/static')
+const path = require('path');
 
 async function searchMusic(req, res) {
     const { name, offset = 0, limit = 10 } = req.query
@@ -59,7 +62,7 @@ async function saveMusic(req, res) {
     const music = {
         id: song.id,
         name: song.name,
-        url: `${baseUrl}/musicFile/${song.id}.mp3`,
+        url: `${uploadmusicPath}/${song.id}.mp3`,
         author: song.ar.map(item => ({ id: item.id, name: item.name })),
         album: {
             id: song.al.id,
@@ -71,7 +74,7 @@ async function saveMusic(req, res) {
 
 
     // 保存至本地
-    const writer = fs.createWriteStream(`musicFile/${music.name}.mp3`);
+    const writer = fs.createWriteStream(path.join(uploadmusicPath, `${music.name}.mp3`));
     musicFile.data.pipe(writer);
 
     writer.on('finish', async () => {

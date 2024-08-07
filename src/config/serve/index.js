@@ -4,11 +4,10 @@ const path = require('path');
 
 
 const port = 3003
-exports.port
 const network = process.env.NODE_ENV === 'development' ? `http://127.0.0.1:${port}` : "https://music.moonc.love"
-exports.network
 
-module.exports = (app) => {
+
+const init = (app) => {
     if (process.env.NODE_ENV === 'development') {
         app.listen(port, () => {
             consoleLog.success(network)
@@ -23,4 +22,10 @@ module.exports = (app) => {
             consoleLog.success(`Https服务已启动`)
         });
     }
+}
+
+module.exports = {
+    port,
+    network,
+    init
 }
