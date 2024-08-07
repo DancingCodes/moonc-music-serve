@@ -26,10 +26,11 @@ async function searchMusic(req, res) {
 async function saveMusic(req, res) {
     const { id } = req.query
     if (!id) {
-        res.send('没有获取到ID')
+        res.send(response.error('没有获取到ID'))
+        return
     }
     if (await musicService.getMusic(id)) {
-        res.send('已有该音乐')
+        res.send(response.error('已有该音乐'))
         return
     }
 
@@ -43,7 +44,7 @@ async function saveMusic(req, res) {
 
 
     if (musicFile.headers['content-type'].startsWith('text/html')) {
-        res.send('VIP音乐无法下载')
+        res.send(response.error('VIP音乐无法下载'))
         return
     }
 
@@ -62,7 +63,7 @@ async function saveMusic(req, res) {
     const music = {
         id: song.id,
         name: song.name,
-        url: `${uploadmusicPath}/${song.id}.mp3`,
+        url: `${baseUrl}/${song.id}.mp3`,
         author: song.ar.map(item => ({ id: item.id, name: item.name })),
         album: {
             id: song.al.id,
@@ -79,7 +80,7 @@ async function saveMusic(req, res) {
 
     writer.on('finish', async () => {
         // 入库
-        await musicService.createMusic()
+        await musicService.createMusic(music)
 
         res.send(response.success(true))
     });
