@@ -11,6 +11,7 @@ async function searchMusic(req, res) {
 
     list = list.map(item => {
         return {
+            id: item.id,
             name: item.name,
             author: item.artists.map(author => author.name)
         }
