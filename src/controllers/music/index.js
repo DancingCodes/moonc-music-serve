@@ -4,9 +4,19 @@ const axios = require('axios');
 
 
 async function searchMusic(req, res) {
-    const { name, offset, limit } = req.query
+    const { name, offset = 0, limit = 10 } = req.query
     const { data } = await axios.post(`https://music.163.com/api/search/get/web?s=${name}&type=1&offset=${offset}&limit=${limit}`)
-    res.send(response.success(data))
+
+    let { songs: list, songCount: total } = data.result
+
+    list = list.map(item => {
+        return {
+            name: item.name,
+            author: item.artists.map(author => author.name)
+        }
+    })
+
+    res.send(response.success({ list, total }))
 }
 
 async function saveMusic(req, res) {
