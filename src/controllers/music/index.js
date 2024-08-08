@@ -8,6 +8,12 @@ const path = require('path');
 
 async function searchMusic(req, res) {
     const { name, offset = 0, limit = 10 } = req.query
+    if (!name) {
+        res.send(response.error('没有获取到歌曲名称'))
+        return
+    }
+
+
     const { data } = await axios.post(`https://music.163.com/api/search/get/web?s=${name}&type=1&offset=${offset}&limit=${limit}`)
 
     let { songs: list, songCount: total } = data.result
