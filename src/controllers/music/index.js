@@ -95,7 +95,16 @@ async function saveMusic(req, res) {
     });
 }
 
+
+async function searchMusic(req, res) {
+    const { name, pageNo = 1, pageSize = 10 } = req.query
+    res.send(response.success(await musicService.getMusicList(name, pageNo, pageSize)));
+}
+
+
+
 module.exports = {
     searchMusicForWY,
-    saveMusic
+    saveMusic,
+    searchMusic
 };
