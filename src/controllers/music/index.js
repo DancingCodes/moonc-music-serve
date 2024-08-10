@@ -61,6 +61,7 @@ async function saveMusic(req, res) {
     // 获取歌曲信息
     const musicDetail = await axios.post(`https://music.163.com/api/v3/song/detail?id=${id}&c=[{id: ${id}}]`)
 
+
     // 获取歌词信息
     const musicLyric = await axios.post(`https://music.163.com/api/song/lyric?id=${id}&lv=-1&tv=-1`)
 
@@ -72,6 +73,7 @@ async function saveMusic(req, res) {
         name: song.name,
         url: `${baseUrl}/${song.id}.mp3`,
         author: song.ar.map(item => ({ id: item.id, name: item.name })),
+        duration: song.dt,
         album: {
             id: song.al.id,
             name: song.al.name,
