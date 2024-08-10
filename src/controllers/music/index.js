@@ -1,9 +1,8 @@
 const musicService = require('@/services/music')
 const response = require('@/utils/response')
 const axios = require('axios');
-const { port } = require('@/config/serve')
 const fs = require('fs')
-const { uploadmusicPath } = require('@/middlewares/static')
+const { uploadmusicPath, requestMusicPath } = require('@/middlewares/static')
 const path = require('path');
 
 async function searchMusicForWY(req, res) {
@@ -14,10 +13,10 @@ async function searchMusicForWY(req, res) {
         return
     }
 
-
     const { data } = await axios.post(`https://music.163.com/api/search/get/web?s=${name}&type=1&offset=${(pageNo - 1) * pageSize}&limit=${pageSize}`)
 
     let { songs: list, songCount: total } = data.result
+
 
     list = list.map(item => {
         return {
@@ -66,12 +65,11 @@ async function saveMusic(req, res) {
     const musicLyric = await axios.post(`https://music.163.com/api/song/lyric?id=${id}&lv=-1&tv=-1`)
 
     // 整合信息
-    const baseUrl = process.env.NODE_ENV === 'development' ? `http://127.0.0.1:${port}` : 'https://music.moonc.love'
     const song = musicDetail.data.songs[0]
     const music = {
         id: song.id,
         name: song.name,
-        url: `${baseUrl}/${song.id}.mp3`,
+        url: `${requestMusicPath}/${song.id}.mp3`,
         author: song.ar.map(item => ({ id: item.id, name: item.name })),
         duration: song.dt,
         album: {
@@ -84,7 +82,7 @@ async function saveMusic(req, res) {
 
 
     // 保存至本地
-    const writer = fs.createWriteStream(path.join(uploadmusicPath, `${music.name}.mp3`));
+    const writer = fs.createWriteStream(path.join(uploadmusicPath, `${music.id}.mp3`));
     musicFile.data.pipe(writer);
 
     writer.on('finish', async () => {
