@@ -4,7 +4,7 @@ const path = require('path');
 
 
 const port = 3003
-const network = process.env.NODE_ENV === 'development' ? `http://127.0.0.1:${port}` : "https://music.moonc.love"
+const network = process.env.NODE_ENV === 'development' ? `http://127.0.0.1:${port}` : "https://musicapi.moonc.love"
 
 
 const init = (app) => {
