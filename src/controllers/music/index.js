@@ -5,7 +5,7 @@ const fs = require('fs')
 const { uploadmusicPath, requestMusicPath } = require('@/middlewares/static')
 const path = require('path');
 
-async function searchMusicForWY(req, res) {
+async function searchMusicByWY(req, res) {
     const { name, pageNo = 1, pageSize = 10 } = req.query
 
     if (!name) {
@@ -102,7 +102,7 @@ async function searchMusic(req, res) {
 
 
 module.exports = {
-    searchMusicForWY,
+    searchMusicByWY,
     saveMusic,
     searchMusic
 };

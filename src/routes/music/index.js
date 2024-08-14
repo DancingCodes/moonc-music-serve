@@ -4,7 +4,7 @@ const router = express.Router();
 const musicController = require('@/controllers/music');
 
 // Moonc - Music - Serve - Ui
-router.get('/searchMusicForWY', musicController.searchMusicForWY)
+router.get('/searchMusicByWY', musicController.searchMusicByWY)
 
 router.get('/saveMusic', musicController.saveMusic)
 
