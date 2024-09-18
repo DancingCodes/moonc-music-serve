@@ -7,7 +7,7 @@ const path = 'mongodb://MooncMusic:DancingCodes1227@127.0.0.1:27017/MooncMusic?a
 // db.createUser({
 //     user: "MooncMusic",
 //     pwd: "DancingCodes1227",
-//     roles: [{ role: "userAdmin", db: "MooncMusic" }]
+//     roles: [{ role: "readWrite", db: "MooncMusic" }]
 // })
 
 mongoose.connect(path).then(() => {
